@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# Usage: use python3.12.2
+
+# Check if the user provided a Python version argument
+if [ -z "$1" ]; then
+    echo "Usage: use <python_version>"
+    exit 1
+fi
+
+# Search for Python installations matching the provided version
+python_version=$(echo "$1" | cut -d '.' -f 1,2 | tr -d '.')
+python_dir_script="/c/Users/thier/AppData/Local/Programs/Python/Python${python_version}/Scripts"
+python_dir="/c/Users/thier/AppData/Local/Programs/Python/Python${python_version}"
+
+# Print the value of python_dirs after assignment
+# echo "Python directories:"
+# echo "$python_dir_script"
+# echo "$python_dir"
+
+# Check if Python installation directories are found
+if [ ! -d "${python_dir_script}" ] || [ ! -d "${python_dir}" ]; then
+    echo "Python $1 is not installed."
+    exit 1
+fi
+
+# Remove all paths containing 'Python'
+# Initialize an empty string to store the filtered paths
+filtered_paths=""
+
+# Split the PATH variable by ":" and iterate over each path
+IFS=":" read -r -a paths <<< "$PATH"
+for path in "${paths[@]}"; do
+    # Check if the path contains "/Python"
+    if [[ ! "$path" == *"/Python${python_version}"* ]]; then
+        # Append the path to the filtered_paths string
+        filtered_paths+="$path:"
+    fi
+done
+
+# Remove the trailing ":" if it exists
+filtered_paths="${filtered_paths%:}"
+export PATH=$(echo $filtered_paths)
+
+# Add Python paths for the specified version to the beginning of PATH
+export PATH="${python_dir_script}:${python_dir}:$PATH"
+
+# Print all paths in the PATH variable line by line
+# echo "All paths in PATH:"
+# echo $PATH | /usr/bin/tr ':' '\n'
+
+# Print all python paths in the PATH variable line by line
+echo $PATH | /usr/bin/tr ':' '\n' | grep -i python
+
+# Display the currently selected Python version
+echo "Python $1 is now active."
+
+# persist the PATH variable permanently
+echo "export PATH='$(echo $PATH)'" > ~/.bashrc
+
+# Create an alias for the python_versions command
+echo "alias python-versions='find /c/Users/thier/AppData/Local/Programs/Python -mindepth 1 -maxdepth 1 -type d | grep -P \"/Python\d+(\.\d+)?\"'" >> ~/.bashrc
+
+# apply the changes to all shell sessions
+source ~/.bashrc
+
+# end the current shell session and start a new one
+exec bash
+
+
+
