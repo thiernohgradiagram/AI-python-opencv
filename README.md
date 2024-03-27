@@ -24,9 +24,8 @@ Each virtual environment maintains its own set of installed packages, separate f
 your Python virtual environment should still work even if you delete your Python installation. This is because the virtual environment contains its own copy of the Python interpreter and necessary libraries, which are independent of the global Python installation on your system.
 When you create a virtual environment, it copies the necessary files from your Python installation into the virtual environment directory. This includes the Python interpreter executable and standard library modules. As long as these files remain intact within the virtual environment directory, you can continue to use the virtual environment even if the global Python installation is removed.
 
-python -3.7 -m venv myvenv 		-> creating a python3.7 virtual environment named myvenv.
- 
+py -3.7 -m venv myvenv  -> creating a python3.7 virtual environment named myvenv using the windows python luncher
+python -m venv myvenv   -> creating a python virtual environment named myvenv using the current python.exe
 myvenv/scripts/activate				-> activating the python virtual environment.
-
 myvenv/scripts/deactivate			-> deactivating the python virtual environment.
 
